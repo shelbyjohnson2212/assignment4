@@ -1,57 +1,48 @@
 package com.meritamerica.assignment4;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-class CheckingAccount extends BankAccount {
-	
-	public static final double INTEREST_RATE = 0.0001;
-	
-	public CheckingAccount(double openBalance, double interestRate){
-		super(openBalance, interestRate); 
+public class CheckingAccount extends BankAccount{
+	/**
+	 * Static variable for interest rate
+	 */
+	static double interestRate = 0.0001;
+	/**
+	 * A Constructor that is passing to parent class
+	 * @param openingBalance
+	 */
+	public CheckingAccount(double openingBalance){
+		super(openingBalance, interestRate);
 	}
-	
-	public CheckingAccount (long accountNumber, double openBalance, double interestRate, Date accountOpenedOn) {
-		super(accountNumber, openBalance, interestRate, accountOpenedOn);
+	/**
+	 * A constructor that is passing to parent class.
+	 * @param accountNumber
+	 * @param balance
+	 * @param interestRate
+	 * @param openedOn
+	 */
+	public CheckingAccount(Long accountNumber, Double balance,
+			Double interestRate, Date openedOn) {
+			super(accountNumber, balance, interestRate, openedOn);
 	}
-
-	public boolean withdraw(double amount) {
-		if(amount <= super.getBalance() && amount > 0) {
-			this.balance = balance - amount;
-			System.out.println("Withdrawn amount: " + amount);
-			System.out.println("Remaining balance: " + balance);
-			return true;
+	/**
+	 * Read from String , gets data thats being passed through, and returns new account with the information
+	 * @param accountData
+	 * @return
+	 * @throws ParseException
+	 */
+	public static CheckingAccount readFromString(String accountData) throws ParseException{
+		try {
+			String[] temp = accountData.split(",");
+			Date date = new SimpleDateFormat("dd/MM/yyyy").parse(temp[3]);
+			CheckingAccount newAccount =  new CheckingAccount(Long.valueOf(temp[0]), Double.valueOf(temp[1]),Double.valueOf(temp[2]), date);
+			return newAccount;
 		}
-		return false;
-	}
-
-	public boolean deposit(double amount) {
-		if (amount > 0) {
-			this.balance = balance + amount;
-			System.out.println("Deposited amount: " + amount);
-			System.out.println("Total balance: " + balance);
-			return true;
+		catch(Exception exception) {
+			throw new NumberFormatException();
 		}
-		return false;		
 	}
 
-	public String toString() {
-		return  "Checking Account Balance: $" + getBalance() + "\n" + 
-				"Checking Account Interest Rate: " + getInterestRate() + "\n" + 
-				"Checking Account Balance in 3 years: $" + futureValue(3);
-		
-	}
-
-	public static CheckingAccount readFromString(String accountData)throws ParseException {
-    	
-    		String [] holding = accountData.split(",");
-    		SimpleDateFormat date = new SimpleDateFormat("dd/MM/yyyy");
-    		//[0] is accountNumber, [1] is balance, [2] is interestRate, date is [3] which is SimpleDate
-    		long accountNumber = Long.parseLong(holding[0]);
-    		double balance = Double.parseDouble(holding[1]);
-    		double interestRate = Double.parseDouble(holding[2]);
-    		Date accountOpenedOn = date.parse(holding[3]);
-    		CheckingAccount newCheckingAccount = new CheckingAccount(accountNumber, balance, interestRate, accountOpenedOn);
-    		return newCheckingAccount;
-    }   
-} 	
+}

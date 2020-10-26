@@ -1,36 +1,48 @@
 package com.meritamerica.assignment4;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-class SavingsAccount extends BankAccount {
-	
-	public static final double INTEREST_RATE = 0.01;
-	
-	public SavingsAccount(double openBalance, double interestRate){
-		super(openBalance, interestRate);
+public class SavingsAccount extends BankAccount{
+	/**
+	 * Static variable for interest rate
+	 */
+	static double interestRate = 0.01;
+	/**
+	 * A Constructor that is passing to parent class
+	 * @param openingBalance
+	 */
+	public SavingsAccount(double openingBalance){
+		super(openingBalance, interestRate);
 	}
-	
-	public SavingsAccount (long accountNumber, double openBalance, double interestRate, Date accountOpenedOn) {
-		super(accountNumber, openBalance, interestRate, accountOpenedOn);
+	/**
+	 * A constructor that is passing to parent class.
+	 * @param accountNumber
+	 * @param balance
+	 * @param interestRate
+	 * @param openedOn
+	 */
+	public SavingsAccount(Long accountNumber, Double balance,
+		Double interestRate, Date openedOn) {
+		super(accountNumber, balance, interestRate, openedOn);
 	}
-	
-	public String toString() {
-		return "Savings Account Balance: $" + balance + "\n" + 
-				"Savings Account Interest Rate: " + INTEREST_RATE + "\n" + 
-				"Savings Account Balance in 3 years: $" + futureValue(3);
-	
+	/**
+	 * Read from String , gets data thats being passed through, and returns new account with the information
+	 * @param accountData
+	 * @return
+	 * @throws ParseException
+	 */
+	public static SavingsAccount readFromString(String accountData) throws ParseException{
+		try {
+			String[] holding = accountData.split(",");
+			Date date = new SimpleDateFormat("dd/MM/yyyy").parse(holding[3]);
+			SavingsAccount newAccount =  new SavingsAccount(Long.valueOf(holding[0]), Double.valueOf(holding[1]),Double.valueOf(holding[2]), date);
+			return newAccount;
+		}
+		catch(Exception exception) {
+			throw new NumberFormatException();
+		}
 	}
-	
-	public static SavingsAccount readFromString(String accountData)throws ParseException, NumberFormatException {
-    	String [] holding = accountData.split(",");
-    	SimpleDateFormat date = new SimpleDateFormat("dd/MM/yyyy");
-    	//[0] is accountNumber, [1] is balance, [2] is interestRate, date is [3] which is SimpleDate
-    	long accountNumber = Long.parseLong(holding[0]);
-    	double balance = Double.parseDouble(holding[1]);
-    	double interestRate = Double.parseDouble(holding[2]);
-    	Date accountOpenedOn = date.parse(holding[3]);
 
-    	return new SavingsAccount(accountNumber, balance, interestRate, accountOpenedOn);
-	}
 }
